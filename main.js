@@ -5,13 +5,8 @@ import { firebaseConfig } from "./firebase-config.js";
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
-// Od razu pokazujemy główną sekcję i uruchamiamy kamerę
-// document.getElementById("auth").style.display = "none";
-
 let currentStream = null;
 let currentFacing = "environment";
-
-
 
 async function startCamera(facingMode) {
   const video = document.getElementById("camera");
@@ -42,24 +37,20 @@ document.addEventListener("DOMContentLoaded", () => {
 function takePhoto() {
   const video = document.getElementById("camera");
   const canvas = document.getElementById("canvas");
-  // Ustaw proporcje pionowe (np. 3:4)
   const targetWidth = 720;
   const targetHeight = 960;
   canvas.width = targetWidth;
   canvas.height = targetHeight;
-  // Wyśrodkuj obraz z kamery na pionowym canvasie
   const ctx = canvas.getContext("2d");
   const videoAspect = video.videoWidth / video.videoHeight;
   const canvasAspect = targetWidth / targetHeight;
   let sx, sy, sw, sh;
   if (videoAspect > canvasAspect) {
-    // Kamera szersza niż canvas: przytnij boki
     sh = video.videoHeight;
     sw = sh * canvasAspect;
     sx = (video.videoWidth - sw) / 2;
     sy = 0;
   } else {
-    // Kamera wyższa niż canvas: przytnij górę/dół
     sw = video.videoWidth;
     sh = sw / canvasAspect;
     sx = 0;
@@ -72,7 +63,6 @@ function takePhoto() {
   document.querySelector('button[onclick="takePhoto()"]').style.display = "none";
   document.getElementById("retryBtn").style.display = "inline-block";
   document.getElementById("switchBtn").style.display = "none";
-  // Zatrzymaj stream kamery
   if (video.srcObject) {
     video.srcObject.getTracks().forEach(track => track.stop());
     video.srcObject = null;
@@ -121,19 +111,16 @@ function retryPhoto() {
 }
 
 function switchCamera() {
-  // Zmień tryb kamery
   currentFacing = currentFacing === "environment" ? "user" : "environment";
-  // Zatrzymaj poprzedni stream
   const video = document.getElementById("camera");
   if (video.srcObject) {
     video.srcObject.getTracks().forEach(track => track.stop());
     video.srcObject = null;
   }
-  // Uruchom nową kamerę
   startCamera(currentFacing);
 }
-window.switchCamera = switchCamera;
 
+window.switchCamera = switchCamera;
 window.takePhoto = takePhoto;
 window.uploadPhoto = uploadPhoto;
 window.retryPhoto = retryPhoto;
@@ -161,5 +148,3 @@ document.addEventListener("DOMContentLoaded", () => {
   // loadText("about.txt", "aboutTextDisplay");
   // loadText("schedule.txt", "scheduleTextDisplay");
 });
-
-// Funkcja showGallery została usunięta - galeria jest dostępna przez slideshow.html
