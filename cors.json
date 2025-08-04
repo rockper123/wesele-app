@@ -1,6 +1,9 @@
 [
   {
-    "origin": ["*"],
+    "origin": [
+      "https://rockper123.github.io",
+      "https://wesele-fa05e.web.app"
+    ],
     "method": ["GET", "HEAD", "PUT", "POST", "DELETE", "OPTIONS"],
     "maxAgeSeconds": 3600,
     "responseHeader": ["*"]
