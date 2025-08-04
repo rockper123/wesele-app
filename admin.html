@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel administracyjny - Wesele</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div id="loginBox" class="card">
+    <h2>Logowanie do panelu admina</h2>
+    <input type="password" id="adminPass" placeholder="Hasło" style="padding:12px;width:80%;border-radius:12px;border:1px solid #f7d7c4;">
+    <button id="loginBtn">Zaloguj</button>
+    <p id="loginError" style="color:#c00;"></p>
+  </div>
+  <div id="admin-panel" class="card" style="display:none;">
+    <h2>Panel administracyjny</h2>
+    <form id="editForm">
+      <h3>Edycja "O nas"</h3>
+      <textarea id="aboutText" rows="3" style="width:100%;"></textarea>
+      <h3>Edycja planu dnia</h3>
+      <textarea id="scheduleText" rows="6" style="width:100%;"></textarea>
+      <button type="submit">Zapisz zmiany</button>
+    </form>
+    <hr class="divider"/>
+    <div id="photos"></div>
+  </div>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

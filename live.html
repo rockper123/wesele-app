@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Galeria Live</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      padding: 16px;
+    }
+    .gallery-grid img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      object-fit: cover;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Galeria weselna</h1>
+  <a id="addPhotoBtn" class="gallery-btn" style="margin-bottom:18px;">Dodaj więcej zdjęć</a>
+  <input type="file" id="photoInput" accept="image/*" multiple style="display:none;" />
+  <button id="downloadAllBtn" class="gallery-btn" style="margin-bottom:18px;">Pobierz wszystkie zdjęcia</button>
+  <div id="gallery" class="gallery-grid"></div>
+  <script type="module" src="gallery.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
+    import { firebaseConfig } from "./firebase-config.js";
+
+    const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
+
+    // Obsługa pobierania wszystkich zdjęć (bez zmian)
+    document.getElementById("downloadAllBtn").onclick = async () => {
+      const listRef = ref(storage, 'photos');
+      const res = await listAll(listRef);
+      for (const itemRef of res.items) {
+        const url = `https://firebasestorage.googleapis.com/v0/b/${storage.app.options.storageBucket}/o/photos%2F${encodeURIComponent(itemRef.name)}?alt=media`;
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = itemRef.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        await new Promise(r => setTimeout(r, 500));
+      }
+    };
+
+    // Obsługa dodawania zdjęć z galerii
+    const addPhotoBtn = document.getElementById("addPhotoBtn");
+    const photoInput = document.getElementById("photoInput");
+
+    addPhotoBtn.onclick = () => photoInput.click();
+
+    photoInput.onchange = async () => {
+      const files = photoInput.files;
+      if (!files.length) return;
+      for (const file of files) {
+        const fileName = `photo_${Date.now()}_${Math.floor(Math.random()*10000)}.jpg`;
+        const storageRef = ref(storage, `photos/${fileName}`);
+        await uploadBytes(storageRef, file);
+      }
+      alert("Zdjęcia zostały dodane!");
+      window.location.reload();
+    };
+
+    async function showGallery() {
+      const galleryDiv = document.getElementById("gallery");
+      galleryDiv.innerHTML = "";
+      const photosRef = ref(storage, "photos");
+      try {
+        const res = await listAll(photosRef);
+        if (res.items.length === 0) {
+          galleryDiv.innerHTML = "<p style='grid-column:1/-1;text-align:center;'>Brak zdjęć w galerii.</p>";
+        }
+        for (const itemRef of res.items) {
+          const url = await getDownloadURL(itemRef);
+          const img = document.createElement("img");
+          img.src = url;
+          img.alt = itemRef.name;
+          galleryDiv.appendChild(img);
+        }
+      } catch (err) {
+        galleryDiv.innerHTML = "Błąd ładowania galerii: " + err.message;
+      }
+    }
+
+    // Wywołaj po załadowaniu strony
+    document.addEventListener("DOMContentLoaded", showGallery);
+  </script>
+</body>
+</html>

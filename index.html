@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wesele Gabrieli i Konrada</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div id="main">
+    <h1>Witamy na weselu Gabrieli i Konrada!</h1>
+
+    <video id="camera" autoplay playsinline></video>
+    <button id="switchBtn" onclick="switchCamera()" style="margin-bottom:12px;">Przełącz kamerę</button>
+    <button onclick="takePhoto()">Zrób zdjęcie</button>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <button id="uploadBtn" style="display:none;" onclick="uploadPhoto()">Wyślij zdjęcie</button>
+    <button id="retryBtn" style="display:none;" onclick="retryPhoto()">Spróbuj ponownie</button>
+    <a href="live.html" class="gallery-btn">Zobacz galerię</a>
+    
+  </div>
+
+  <section id="about" class="card">
+    <h2>O nas</h2>
+    <p id="aboutTextDisplay">Witamy na weselu Gabrieli i Konrada!<br><br>Jesteśmy szczęśliwi, że mogliście być z nami w tym wyjątkowym dniu. To będzie niezapomniane święto miłości, radości i wspólnych wspomnień.<br><br>Życzymy wszystkim wspaniałej zabawy!</p>
+  </section>
+
+  <hr class="divider"/>
+
+  <section id="schedule" class="card">
+    <h2>Plan dnia</h2>
+    <pre id="scheduleTextDisplay">PLAN DNIA WESELA
+
+14:00 - Przybycie gości
+14:30 - Ceremonia ślubna
+15:30 - Zdjęcia ślubne
+16:00 - Przyjęcie weselne
+17:00 - Pierwszy taniec
+18:00 - Kolacja
+19:00 - Zabawa taneczna
+20:00 - Tort weselny
+21:00 - Zabawa do białego rana!
+
+Życzymy wspaniałej zabawy!</pre>
+  </section>
+
+  <hr class="divider"/>
+
+  <section id="contact" class="card">
+    <h2>Kontakt</h2>
+    <p>Masz pytania? Skontaktuj się z nami:</p>
+    <p><a href="mailto:gabriela.konrad@email.com">gabriela.konrad@email.com</a></p>
+  </section>
+
+  <section id="guestbook" class="card">
+    <h2>Księga gości</h2>
+    <div id="guestbookMessages" style="max-height:200px;overflow-y:auto;margin-bottom:12px;"></div>
+    <input id="guestName" type="text" placeholder="Twoje imię" style="margin-bottom:8px;width:60%;"/>
+    <input id="guestWish" type="text" placeholder="Wpisz życzenia..." style="width:60%;"/>
+    <button id="guestSendBtn">Dodaj wpis</button>
+  </section>
+
+  <section id="songs" class="card">
+    <h2>Propozycje utworów</h2>
+    <div id="songsList" style="max-height:200px;overflow-y:auto;margin-bottom:12px;"></div>
+    <input id="songName" type="text" placeholder="Tytuł lub wykonawca" style="width:60%;"/>
+    <button id="songSendBtn">Zaproponuj utwór</button>
+  </section>
+
+  <button id="projectorBtn" style="position:fixed;bottom:24px;right:24px;z-index:1000;padding:10px 18px;border-radius:18px;background:#d4af37;color:#fff;font-weight:700;box-shadow:0 2px 8px rgba(212,175,55,0.18);border:none;cursor:pointer;">
+    Tryb projektora
+  </button>
+  <script>
+    document.getElementById("projectorBtn").onclick = function() {
+      if (confirm("Czy na pewno chcesz przejść do trybu projektora?")) {
+        window.location.href = "slideshow.html";
+      }
+    };
+  </script>
+
+  <button id="nightModeBtn" style="position:fixed;top:24px;right:24px;z-index:1000;padding:10px 18px;border-radius:18px;background:#6d4c41;color:#fff;font-weight:700;box-shadow:0 2px 8px rgba(212,175,55,0.18);border:none;cursor:pointer;">
+    Tryb nocny
+  </button>
+  <script>
+    document.getElementById("nightModeBtn").onclick = function() {
+      document.body.classList.toggle("night");
+    };
+  </script>
+
+  <button id="guestbookBtn" class="gallery-btn" style="margin-bottom:18px;">
+    Przejdź do księgi gości
+  </button>
+  <script>
+    document.getElementById("guestbookBtn").onclick = function() {
+      window.location.href = "guestbook.html";
+    };
+  </script>
+
+  <script type="module" src="main.js"></script>
+  <script type="module" src="guestbook.js"></script>
+  <script type="module" src="songs.js"></script>
+</body>
+</html>
