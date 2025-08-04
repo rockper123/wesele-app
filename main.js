@@ -82,43 +82,27 @@ function takePhoto() {
 async function uploadPhoto() {
   const canvas = document.getElementById("canvas");
   const fileName = `photo_${Date.now()}.png`;
+  const storageRef = ref(storage, `photos/${fileName}`);
   
   try {
-    // Konwertuj canvas na base64
-    const imageData = canvas.toDataURL('image/png');
-    
-    // Wywołaj Firebase Function
-    const response = await fetch('https://us-central1-wesele-fa05e.cloudfunctions.net/uploadPhoto', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        imageData: imageData,
-        fileName: fileName
-      })
-    });
-    
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    
-    const result = await response.json();
-    
-    if (result.success) {
-      alert("Zdjęcie wysłane!\nMożesz je zobaczyć tutaj:\n" + result.url);
-      document.getElementById("uploadBtn").style.display = "none";
-      canvas.style.display = "none";
-      const preview = document.createElement("div");
-      preview.className = "preview";
-      preview.innerHTML = `<p>Zdjęcie dodane! <a href="${result.url}" target="_blank">Zobacz zdjęcie</a></p>`;
-      document.getElementById("main").appendChild(preview);
-      const video = document.getElementById("camera");
-      video.style.display = "block";
-      startCamera();
-    } else {
-      throw new Error('Upload failed');
-    }
+    canvas.toBlob(async (blob) => {
+      try {
+        await uploadBytes(storageRef, blob);
+        const url = `https://firebasestorage.googleapis.com/v0/b/${storage.app.options.storageBucket}/o/photos%2F${encodeURIComponent(fileName)}?alt=media`;
+        alert("Zdjęcie wysłane!\nMożesz je zobaczyć tutaj:\n" + url);
+        document.getElementById("uploadBtn").style.display = "none";
+        canvas.style.display = "none";
+        const preview = document.createElement("div");
+        preview.className = "preview";
+        preview.innerHTML = `<p>Zdjęcie dodane! <a href="${url}" target="_blank">Zobacz zdjęcie</a></p>`;
+        document.getElementById("main").appendChild(preview);
+        const video = document.getElementById("camera");
+        video.style.display = "block";
+        startCamera();
+      } catch (err) {
+        alert("Błąd podczas wysyłania zdjęcia: " + err.message);
+      }
+    }, "image/png");
   } catch (err) {
     alert("Błąd podczas wysyłania zdjęcia: " + err.message);
   }
